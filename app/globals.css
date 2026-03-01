@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-sapphire: #0F172A;
+  --color-gold: #FDE047;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-sapphire);
+    color: white;
+  }
+}

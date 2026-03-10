@@ -49,25 +49,19 @@ export async function attemptRepair(
 
       const repairResult = await runCommand(repairCommand);
 
-      if (repairResult.success) {
-        await prisma.activity.create({
-          data: {
-            sessionId,
-            type: "THOUGHT",
-            content: `Repair successful for command '${failedCommand}'.`,
-          },
-        });
-        return true;
-      } else {
-         await prisma.activity.create({
-          data: {
-            sessionId,
-            type: "THOUGHT",
-            content: `Repair failed for command '${failedCommand}'. Manual intervention may be needed.`,
-          },
-        });
-        return false;
-      }
+      const content = repairResult.success
+        ? `Repair successful for command '${failedCommand}'.`
+        : `Repair failed for command '${failedCommand}'. Manual intervention may be needed.`;
+
+      await prisma.activity.create({
+        data: {
+          sessionId,
+          type: "THOUGHT",
+          content,
+        },
+      });
+
+      return repairResult.success;
     }
     return false;
 

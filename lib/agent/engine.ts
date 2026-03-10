@@ -10,18 +10,18 @@ const customFetch = (url: string | Request | URL, init?: RequestInit) => {
 
 export const genAI = new GoogleGenerativeAI(apiKey);
 
-export async function askAgent(prompt: string): Promise<string> {
-    const model = genAI.getGenerativeModel(
-        { model: "gemini-2.5-pro" },
-        {
-            apiVersion: 'v1alpha',
-            baseUrl: 'https://jules.googleapis.com',
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            customClient: { fetch: customFetch } as any
+export const model = genAI.getGenerativeModel(
+    { model: "gemini-2.5-pro" },
+    {
+        apiVersion: 'v1alpha',
+        baseUrl: 'https://jules.googleapis.com',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } as any
-    );
+        customClient: { fetch: customFetch } as any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any
+);
 
+export async function askAgent(prompt: string): Promise<string> {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();

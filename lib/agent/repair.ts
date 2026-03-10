@@ -1,8 +1,6 @@
 import { runCommand, ShellResult } from "./shell";
-import { PrismaClient } from "@prisma/client";
 import { generateRepairPrompt } from "./engine";
-
-const prisma = new PrismaClient();
+import prisma from "../prisma";
 
 export async function attemptRepair(
   sessionId: string,

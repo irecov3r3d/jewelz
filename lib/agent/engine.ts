@@ -27,9 +27,13 @@ export async function askAgent(prompt: string): Promise<string> {
     return response.text();
 }
 
+export function parseRepairResponse(repairResponse: string): string {
+    return repairResponse.replace(/^```(bash)?/gm, "").replace(/```$/gm, "").trim();
+}
+
 export async function generateRepairPrompt(failedCommand: string, errorMsg: string): Promise<string> {
     const prompt = `The command '${failedCommand}' failed with the following error:\n\n${errorMsg}\n\nProvide ONLY the fixed bash command or file changes required to fix this issue. If it's a bash command, provide only the command as text without markdown blocks.`;
 
     const repairResponse = await askAgent(prompt);
-    return repairResponse.replace(/^```(bash)?/gm, '').replace(/```$/gm, '').trim();
+    return parseRepairResponse(repairResponse);
 }

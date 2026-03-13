@@ -3,16 +3,19 @@
 @theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-sapphire-blue: #0F172A;
+  --color-gold-highlight: #FDE047;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: var(--color-sapphire-blue);
+  --foreground: #ededed;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: var(--color-sapphire-blue);
     --foreground: #ededed;
   }
 }

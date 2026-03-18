@@ -2,7 +2,7 @@ import { OptimizationResult, OutputType, ExtractedMetadata, PromptMetadata } fro
 
 // Helper function to extract framework, language, and environment from user input
 function extractFrameworks(input: string): string[] {
-  const commonFrameworks = ["react", "next.js", "nextjs", "vue", "angular", "node", "node.js", "python", "django", "flask", "ruby", "rails", "go", "rust", "typescript", "javascript", "bash"];
+  const commonFrameworks = ["react", "next.js", "nextjs", "vue", "angular", "node", "node.js", "python", "django", "flask", "ruby", "rails", "go", "rust", "typescript", "javascript", "bash", "tailwind", "fastapi", "express", "mongodb", "postgresql"];
   const found: string[] = [];
   const lowerInput = input.toLowerCase();
 
@@ -65,7 +65,7 @@ function generateOptimizedPrompt(input: string, extracted: ExtractedMetadata): s
   const fwString = extracted.frameworks.length > 0 ? extracted.frameworks.join(", ") : "an appropriate framework";
   const typeString = extracted.outputType;
 
-  let prompt = `You are Jules, an expert software engineer. Your task is to build a ${typeString} based on the following requirements:
+  const prompt = `You are Jules, an expert software engineer. Your task is to build a ${typeString} based on the following requirements:
 
 REQUIREMENTS:
 "${input}"

@@ -7,22 +7,23 @@ export async function attemptRepair(
   failedCommand: string,
   errorLog: ShellResult
 ): Promise<boolean> {
-  // Log the error first
-  await prisma.errorLog.create({
-    data: {
-      sessionId,
-      command: failedCommand,
-      error: `STDOUT: ${errorLog.stdout}\nSTDERR: ${errorLog.stderr}`,
-    },
-  });
-
-  await prisma.activity.create({
-    data: {
-      sessionId,
-      type: "THOUGHT",
-      content: `Self-Conscious Loop triggered: Command '${failedCommand}' failed. Attempting repair...`,
-    },
-  });
+  // Log the error and initial activity concurrently
+  await Promise.all([
+    prisma.errorLog.create({
+      data: {
+        sessionId,
+        command: failedCommand,
+        error: `STDOUT: ${errorLog.stdout}\nSTDERR: ${errorLog.stderr}`,
+      },
+    }),
+    prisma.activity.create({
+      data: {
+        sessionId,
+        type: "THOUGHT",
+        content: `Self-Conscious Loop triggered: Command '${failedCommand}' failed. Attempting repair...`,
+      },
+    }),
+  ]);
 
   try {
     // Generate repair code/action from the LLM

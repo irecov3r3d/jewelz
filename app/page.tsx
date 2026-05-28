@@ -1,8 +1,32 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Terminal, BrainCircuit, Activity } from "lucide-react";
 import { motion } from "framer-motion";
+
+// ⚡ Bolt: Memoized ThoughtItem to prevent O(N) re-renders on keystrokes
+// Expected impact: Typing in the objective input will no longer re-render the entire thought history
+const ThoughtItem = React.memo(({ thought }: { thought: { id: number; text: string; time: string } }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="border-l-2 border-[#FDE047] pl-3 py-1"
+  >
+    <span className="text-xs text-gray-500 block mb-1">{thought.time}</span>
+    <p className="text-sm text-gray-300">{thought.text}</p>
+  </motion.div>
+));
+ThoughtItem.displayName = "ThoughtItem";
+
+// ⚡ Bolt: Memoized TerminalLine to prevent O(N) re-renders on keystrokes
+// Expected impact: Typing in the objective input will no longer re-render the entire terminal history
+const TerminalLine = React.memo(({ line }: { line: string }) => (
+  <div className="mb-1 leading-relaxed break-all">
+    <span className="text-gray-500 mr-2">$</span>
+    {line}
+  </div>
+));
+TerminalLine.displayName = "TerminalLine";
 
 export default function Home() {
   const [thoughts, setThoughts] = useState<{ id: number; text: string; time: string }[]>([]);
@@ -70,15 +94,7 @@ export default function Home() {
                   <div className="text-gray-600 text-sm italic text-center mt-10">Awaiting input...</div>
                 ) : (
                   thoughts.map((thought) => (
-                    <motion.div
-                      key={thought.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="border-l-2 border-[#FDE047] pl-3 py-1"
-                    >
-                      <span className="text-xs text-gray-500 block mb-1">{thought.time}</span>
-                      <p className="text-sm text-gray-300">{thought.text}</p>
-                    </motion.div>
+                    <ThoughtItem key={thought.id} thought={thought} />
                   ))
                 )}
              </div>
@@ -102,10 +118,7 @@ export default function Home() {
                <div className="text-gray-600 italic">Terminal ready.</div>
             ) : (
               terminalOutput.map((line, i) => (
-                <div key={i} className="mb-1 leading-relaxed break-all">
-                   <span className="text-gray-500 mr-2">$</span>
-                   {line}
-                </div>
+                <TerminalLine key={i} line={line} />
               ))
             )}
             <div ref={terminalEndRef} />
